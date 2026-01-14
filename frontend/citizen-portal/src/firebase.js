@@ -2,9 +2,10 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
+import { APIKEY } from "../.env";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAClXEOBVBMRkl5l7N3xwMyAkmqFltAd90",
+    apiKey: APIKEY,
     authDomain: "grievance-4ae11.firebaseapp.com",
     projectId: "grievance-4ae11",
     storageBucket: "grievance-4ae11.firebasestorage.app",
