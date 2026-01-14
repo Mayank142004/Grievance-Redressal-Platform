@@ -1,13 +1,15 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../index.css'
+
 function Login({ setAuthenticated }) {
   const [role, setRole] = useState("");
   const [department, setDepartment] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-const API = import.meta.env.VITE_API_URL;
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const roles = [
@@ -30,15 +32,17 @@ const API = import.meta.env.VITE_API_URL;
       console.log("Login response:", response);
       if (response.status === 200) {
         setAuthenticated(true);
+        // Save user details for RBAC
+        const userData = { email, role, department, name: "User" };
         localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("admin", JSON.stringify(userData));
+
         alert(response.data.message || "Login Successful");
-        try {
-          
-          navigate("/admin/dashboard");
-        } catch (navError) {
-          console.error("Navigation error:", navError);
-          alert("Login successful, but dashboard navigation failed.");
-        }
+
+        if (role === 'department_officer') navigate('/admin/dashboard/officer');
+        else if (role === 'department_head') navigate('/admin/dashboard/head');
+        else navigate('/admin/dashboard');
+
       } else {
         alert("Login failed due to unexpected status");
       }
@@ -46,14 +50,13 @@ const API = import.meta.env.VITE_API_URL;
       console.error("Login error caught:", err);
       alert(err.response?.data?.error || "Login failed (catch block)");
     }
-  }; 
-        
-   
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#f3f4f8] to-[#e5e7eb]">
       <div className="px-8 py-6 bg-[#f8f9fc] shadow-xl rounded-lg w-[450px] border border-gray-100">
         <div className="text-center mb-8">
-        
+
           <h4 className="text-xl text-gray-700 mt-1">
             AI-GRS Portal Login
           </h4>
@@ -108,7 +111,7 @@ const API = import.meta.env.VITE_API_URL;
 
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-               Email
+                Email
               </label>
               <input
                 type="text"
@@ -136,7 +139,7 @@ const API = import.meta.env.VITE_API_URL;
           </div>
 
           <div>
-            <button 
+            <button
               type="submit"
               className="w-full py-3 bg-gradient-to-r from-[#FF9933] via-[#000080] to-[#138808] text-white rounded-md hover:opacity-90 transition duration-150 font-medium text-lg shadow-md"
             >
@@ -155,8 +158,5 @@ const API = import.meta.env.VITE_API_URL;
     </div>
   )
 }
-
-
-
 
 export default Login

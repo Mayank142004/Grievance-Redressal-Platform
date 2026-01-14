@@ -1,7 +1,9 @@
+
 import { Schema, model } from 'mongoose';
 
 const grievanceSchema = new Schema({
   name: String,
+  phone: String, // Added Phone Number
   code: String,
   email: String,
   message: String,
@@ -18,8 +20,23 @@ const grievanceSchema = new Schema({
     enum: ['High', 'Medium', 'Low'],
     default: 'Low',
   },
+  // New Fields
+  location: {
+    lat: Number,
+    lng: Number,
+    address: String
+  },
+  images: [String],
+  feedback: String,
+  escalationLevel: { type: Number, default: 0 }, // 0: Officer, 1: Head, 2: Admin
+  logs: [{
+    action: String,
+    by: String, // User/Admin Name or ID
+    timestamp: { type: Date, default: Date.now },
+    remarks: String
+  }],
   createdAt: { type: Date, default: Date.now },
- 
+
 });
 
 export default model('Grievance', grievanceSchema);

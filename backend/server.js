@@ -7,14 +7,18 @@ import grievanceRoutes from './routes/grievance.js';
 import adminAuthRoutes from "./routes/adminAUth.js";
 import adminDashboardRoutes from "./routes/adminDashboard.js";
 import announcementRoutes from './routes/announcements.js';
+import gamificationRoutes from './routes/gamification.js';
+import setupScheduler from './scheduler.js';
 
 
 
 config();
 const app = express();
 const allowedOrigins = [
-    "http://localhost:5174", 
-  "http://localhost:5173", 
+  "http://localhost:5174",
+  "http://localhost:5173",
+  "http://localhost:5176",
+  "http://localhost:5175",
   "https://grievance-citizen-portal.vercel.app",
   "https://admin-grievance-redressal-system.vercel.app"
 ];
@@ -38,18 +42,21 @@ app.use(
 app.use(json());
 app.use("/api/admin-dashboard", adminDashboardRoutes);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/gamification', gamificationRoutes);
 app.use('/api/grievance', grievanceRoutes);
+app.use('/uploads', express.static('uploads'));
 app.use("/api/admin", adminAuthRoutes);
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
 connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => {
     console.log('MongoDB connected');
+    setupScheduler(); // Start Scheduler
     app.listen(process.env.PORT, () =>
       console.log(`Server running on port ${process.env.PORT}`)
     );
